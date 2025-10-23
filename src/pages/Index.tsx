@@ -37,14 +37,60 @@ const Index = () => {
       name: 'CYBER GLOVES',
       price: 250.00,
       image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
-      items: []
+      items: [
+        { name: 'Sport Gloves | Superconductor', rarity: 'legendary', price: 890.00, color: '#FF6B00' },
+        { name: 'Driver Gloves | King Snake', rarity: 'epic', price: 520.00, color: '#9D4EDD' },
+        { name: 'Hand Wraps | Cobalt Skulls', rarity: 'rare', price: 310.00, color: '#00F0FF' },
+        { name: 'Broken Fang Gloves | Fade', rarity: 'uncommon', price: 180.00, color: '#4ADE80' },
+      ]
     },
     {
       id: 3,
       name: 'KNIFE COLLECTION',
       price: 500.00,
       image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
-      items: []
+      items: [
+        { name: 'Karambit | Fade', rarity: 'legendary', price: 1850.00, color: '#FF6B00' },
+        { name: 'Butterfly Knife | Doppler', rarity: 'epic', price: 1200.00, color: '#9D4EDD' },
+        { name: 'M9 Bayonet | Gamma Doppler', rarity: 'rare', price: 780.00, color: '#00F0FF' },
+        { name: 'Huntsman Knife | Slaughter', rarity: 'uncommon', price: 420.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 4,
+      name: 'STARTER PACK',
+      price: 50.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'USP-S | Cyber Noir', rarity: 'rare', price: 95.00, color: '#00F0FF' },
+        { name: 'Glock-18 | Vogue', rarity: 'uncommon', price: 55.00, color: '#4ADE80' },
+        { name: 'P250 | See Ya Later', rarity: 'uncommon', price: 38.00, color: '#4ADE80' },
+        { name: 'Five-SeveN | Hyper Beast', rarity: 'common', price: 22.00, color: '#94A3B8' },
+      ]
+    },
+    {
+      id: 5,
+      name: 'PREMIUM RIFLES',
+      price: 350.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'AK-47 | Fire Serpent', rarity: 'legendary', price: 1250.00, color: '#FF6B00' },
+        { name: 'M4A1-S | Hyper Beast', rarity: 'epic', price: 680.00, color: '#9D4EDD' },
+        { name: 'AWP | Asiimov', rarity: 'rare', price: 420.00, color: '#00F0FF' },
+        { name: 'AUG | Chameleon', rarity: 'uncommon', price: 185.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 6,
+      name: 'RARE SKINS',
+      price: 750.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'AWP | Dragon Lore', rarity: 'legendary', price: 3500.00, color: '#FF6B00' },
+        { name: 'AK-47 | Wild Lotus', rarity: 'legendary', price: 2800.00, color: '#FF6B00' },
+        { name: 'M4A4 | Howl', rarity: 'epic', price: 1950.00, color: '#9D4EDD' },
+        { name: 'Desert Eagle | Blaze', rarity: 'rare', price: 890.00, color: '#00F0FF' },
+      ]
     },
   ];
 
