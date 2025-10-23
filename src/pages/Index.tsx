@@ -15,6 +15,9 @@ const Index = () => {
   const [rouletteItems, setRouletteItems] = useState<any[]>([]);
   const [rouletteOffset, setRouletteOffset] = useState(0);
   const rouletteRef = useRef<HTMLDivElement>(null);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [transactions, setTransactions] = useState<any[]>([]);
 
   const cases = [
     {
@@ -101,7 +104,41 @@ const Index = () => {
   const sellSkin = (skin: any) => {
     setInventory(prev => prev.filter(item => item.id !== skin.id));
     setBalance(prev => prev + skin.price);
+    setTransactions(prev => [{
+      id: Date.now(),
+      type: 'sell',
+      amount: skin.price,
+      description: `Продажа: ${skin.name}`,
+      date: new Date().toISOString()
+    }, ...prev]);
     setSelectedSkin(null);
+  };
+
+  const handleDeposit = (amount: number) => {
+    setBalance(prev => prev + amount);
+    setTransactions(prev => [{
+      id: Date.now(),
+      type: 'deposit',
+      amount: amount,
+      description: 'Пополнение баланса',
+      date: new Date().toISOString()
+    }, ...prev]);
+    setDepositAmount('');
+  };
+
+  const handleWithdraw = () => {
+    const amount = parseFloat(withdrawAmount);
+    if (amount > 0 && amount <= balance) {
+      setBalance(prev => prev - amount);
+      setTransactions(prev => [{
+        id: Date.now(),
+        type: 'withdraw',
+        amount: amount,
+        description: 'Вывод средств',
+        date: new Date().toISOString()
+      }, ...prev]);
+      setWithdrawAmount('');
+    }
   };
 
   return (
@@ -422,7 +459,179 @@ const Index = () => {
           </div>
         )}
 
-        {activeSection !== 'games' && activeSection !== 'home' && activeSection !== 'inventory' && (
+        {activeSection === 'deposit' && (
+          <div>
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold mb-2 neon-glow text-secondary">ПОПОЛНЕНИЕ БАЛАНСА</h2>
+              <p className="text-muted-foreground">Выбери удобный способ пополнения</p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {[50, 100, 250, 500, 1000, 2500].map((amount) => (
+                  <Card 
+                    key={amount}
+                    className="bg-card border-2 border-border hover:border-secondary transition-all duration-300 cursor-pointer group"
+                    onClick={() => handleDeposit(amount)}
+                  >
+                    <div className="p-6 text-center">
+                      <Icon name="Coins" className="mx-auto mb-3 text-primary group-hover:scale-110 transition-transform" size={48} />
+                      <p className="text-3xl font-bold text-primary mb-2">${amount}</p>
+                      <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold neon-border">
+                        ПОПОЛНИТЬ
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+
+              <Card className="bg-card border-2 border-border p-6">
+                <h3 className="text-xl font-bold mb-4 text-primary">ПРОИЗВОЛЬНАЯ СУММА</h3>
+                <div className="flex gap-3">
+                  <input 
+                    type="number"
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(e.target.value)}
+                    placeholder="Введите сумму"
+                    className="flex-1 bg-muted border-2 border-border rounded-lg px-4 py-3 text-foreground font-semibold focus:border-secondary outline-none"
+                  />
+                  <Button 
+                    className="bg-secondary hover:bg-secondary/90 text-white font-bold neon-border px-8"
+                    onClick={() => handleDeposit(parseFloat(depositAmount) || 0)}
+                    disabled={!depositAmount || parseFloat(depositAmount) <= 0}
+                  >
+                    <Icon name="Plus" className="mr-2" size={20} />
+                    ПОПОЛНИТЬ
+                  </Button>
+                </div>
+              </Card>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                {[
+                  { name: 'VISA/MC', icon: 'CreditCard' },
+                  { name: 'CRYPTO', icon: 'Bitcoin' },
+                  { name: 'QIWI', icon: 'Wallet' },
+                  { name: 'STEAM', icon: 'Gamepad2' }
+                ].map((method) => (
+                  <Card key={method.name} className="bg-muted border border-border p-4 text-center">
+                    <Icon name={method.icon as any} className="mx-auto mb-2 text-muted-foreground" size={32} />
+                    <p className="text-sm font-semibold text-muted-foreground">{method.name}</p>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'withdraw' && (
+          <div>
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold mb-2 neon-glow text-primary">ВЫВОД СРЕДСТВ</h2>
+              <p className="text-muted-foreground">Доступно для вывода: ${balance.toFixed(2)}</p>
+            </div>
+
+            <div className="max-w-2xl mx-auto">
+              <Card className="bg-card border-2 border-border p-8">
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold mb-2 text-muted-foreground">СУММА ВЫВОДА</label>
+                  <div className="relative">
+                    <input 
+                      type="number"
+                      value={withdrawAmount}
+                      onChange={(e) => setWithdrawAmount(e.target.value)}
+                      placeholder="0.00"
+                      max={balance}
+                      className="w-full bg-muted border-2 border-border rounded-lg px-4 py-4 text-2xl font-bold text-foreground focus:border-primary outline-none"
+                    />
+                    <Button 
+                      variant="ghost"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-secondary font-bold"
+                      onClick={() => setWithdrawAmount(balance.toString())}
+                    >
+                      MAX
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2 mb-6">
+                  {[10, 50, 100, 500].map((amount) => (
+                    <Button 
+                      key={amount}
+                      variant="outline"
+                      className="border-2 hover:border-primary hover:bg-muted font-bold"
+                      onClick={() => setWithdrawAmount(Math.min(amount, balance).toString())}
+                    >
+                      ${amount}
+                    </Button>
+                  ))}
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold mb-2 text-muted-foreground">СПОСОБ ВЫВОДА</label>
+                  <select className="w-full bg-muted border-2 border-border rounded-lg px-4 py-3 text-foreground font-semibold focus:border-primary outline-none">
+                    <option>Steam Trade</option>
+                    <option>VISA/MasterCard</option>
+                    <option>Криптовалюта</option>
+                    <option>QIWI Wallet</option>
+                  </select>
+                </div>
+
+                <Button 
+                  className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 text-lg neon-border"
+                  onClick={handleWithdraw}
+                  disabled={!withdrawAmount || parseFloat(withdrawAmount) <= 0 || parseFloat(withdrawAmount) > balance}
+                >
+                  <Icon name="ArrowUpFromLine" className="mr-2" size={20} />
+                  ВЫВЕСТИ ${withdrawAmount || '0.00'}
+                </Button>
+
+                {parseFloat(withdrawAmount) > balance && (
+                  <p className="text-destructive text-sm mt-3 text-center">Недостаточно средств</p>
+                )}
+              </Card>
+
+              {transactions.length > 0 && (
+                <Card className="bg-card border-2 border-border p-6 mt-6">
+                  <h3 className="text-xl font-bold mb-4 text-primary">ИСТОРИЯ ТРАНЗАКЦИЙ</h3>
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {transactions.slice(0, 10).map((tx) => (
+                      <div key={tx.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            tx.type === 'deposit' ? 'bg-secondary/20' : 
+                            tx.type === 'withdraw' ? 'bg-primary/20' : 
+                            'bg-accent/20'
+                          }`}>
+                            <Icon 
+                              name={tx.type === 'deposit' ? 'ArrowDown' : tx.type === 'withdraw' ? 'ArrowUp' : 'DollarSign'} 
+                              size={20}
+                              className={tx.type === 'deposit' ? 'text-secondary' : tx.type === 'withdraw' ? 'text-primary' : 'text-accent'}
+                            />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm">{tx.description}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(tx.date).toLocaleString('ru-RU')}
+                            </p>
+                          </div>
+                        </div>
+                        <p className={`text-lg font-bold ${
+                          tx.type === 'deposit' ? 'text-secondary' : 
+                          tx.type === 'withdraw' ? 'text-primary' : 
+                          'text-accent'
+                        }`}>
+                          {tx.type === 'withdraw' ? '-' : '+'}{tx.amount.toFixed(2)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeSection !== 'games' && activeSection !== 'home' && activeSection !== 'inventory' && activeSection !== 'deposit' && activeSection !== 'withdraw' && (
           <div className="text-center py-20">
             <Icon name="Construction" className="mx-auto mb-4 text-accent" size={64} />
             <h2 className="text-4xl font-bold neon-glow text-accent mb-4">В РАЗРАБОТКЕ</h2>
