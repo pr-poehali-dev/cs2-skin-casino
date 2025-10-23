@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,9 @@ const Index = () => {
   const [openedItem, setOpenedItem] = useState<any>(null);
   const [inventory, setInventory] = useState<any[]>([]);
   const [selectedSkin, setSelectedSkin] = useState<any>(null);
+  const [rouletteItems, setRouletteItems] = useState<any[]>([]);
+  const [rouletteOffset, setRouletteOffset] = useState(0);
+  const rouletteRef = useRef<HTMLDivElement>(null);
 
   const cases = [
     {
@@ -59,16 +62,32 @@ const Index = () => {
     setIsOpeningCase(true);
     setOpenedItem(null);
     setBalance(prev => prev - caseItem.price);
+    setRouletteOffset(0);
+
+    const wonItem = {
+      ...caseItem.items[Math.floor(Math.random() * caseItem.items.length)],
+      id: Date.now(),
+      openedAt: new Date().toISOString()
+    };
+
+    const rouletteArray: any[] = [];
+    for (let i = 0; i < 50; i++) {
+      const randomSkin = caseItem.items[Math.floor(Math.random() * caseItem.items.length)];
+      rouletteArray.push({ ...randomSkin, uniqueId: `${i}-${Math.random()}` });
+    }
+    rouletteArray[45] = { ...wonItem, uniqueId: '45-won' };
+    setRouletteItems(rouletteArray);
 
     setTimeout(() => {
-      const randomItem = {
-        ...caseItem.items[Math.floor(Math.random() * caseItem.items.length)],
-        id: Date.now(),
-        openedAt: new Date().toISOString()
-      };
-      setOpenedItem(randomItem);
+      const itemWidth = 200;
+      const targetOffset = -(45 * itemWidth - window.innerWidth / 2 + itemWidth / 2);
+      setRouletteOffset(targetOffset);
+    }, 100);
+
+    setTimeout(() => {
+      setOpenedItem(wonItem);
       setIsOpeningCase(false);
-    }, 3000);
+    }, 5000);
   };
 
   const addToInventory = () => {
@@ -184,13 +203,49 @@ const Index = () => {
             </div>
 
             {isOpeningCase && (
-              <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="mb-8">
-                    <div className="w-32 h-32 mx-auto border-4 border-secondary rounded-full animate-spin border-t-transparent"></div>
+              <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+                <h3 className="text-3xl font-bold neon-glow text-secondary mb-8">ОТКРЫВАЕМ КЕЙС...</h3>
+                
+                <div className="relative w-full max-w-6xl h-64 overflow-hidden">
+                  <div 
+                    className="absolute top-1/2 left-1/2 w-1 h-full bg-primary z-20 neon-glow"
+                    style={{ transform: 'translate(-50%, -50%)' }}
+                  />
+                  
+                  <div 
+                    className="absolute top-1/2 left-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary z-20"
+                    style={{ transform: 'translate(-50%, -200%)', filter: 'drop-shadow(0 0 10px hsl(var(--primary)))' }}
+                  />
+                  
+                  <div 
+                    ref={rouletteRef}
+                    className="flex gap-4 absolute top-1/2 left-0 -translate-y-1/2 transition-all duration-[4800ms] ease-out px-4"
+                    style={{ transform: `translate(${rouletteOffset}px, -50%)` }}
+                  >
+                    {rouletteItems.map((item) => (
+                      <Card 
+                        key={item.uniqueId}
+                        className="flex-shrink-0 w-48 h-56 bg-card border-2 flex flex-col items-center justify-center p-4"
+                        style={{ borderColor: item.color }}
+                      >
+                        <Icon name="Crosshair" size={72} style={{ color: item.color }} className="mb-3" />
+                        <Badge 
+                          className="mb-2 text-xs font-bold px-2 py-0.5"
+                          style={{ backgroundColor: item.color }}
+                        >
+                          {item.rarity.toUpperCase()}
+                        </Badge>
+                        <p className="text-xs font-bold text-center leading-tight mb-2" style={{ color: item.color }}>
+                          {item.name}
+                        </p>
+                        <p className="text-lg font-bold text-primary">${item.price.toFixed(2)}</p>
+                      </Card>
+                    ))}
                   </div>
-                  <h3 className="text-3xl font-bold neon-glow text-secondary mb-4">ОТКРЫВАЕМ КЕЙС...</h3>
-                  <Progress value={66} className="w-64 mx-auto" />
+                </div>
+
+                <div className="mt-8">
+                  <Progress value={80} className="w-64" />
                 </div>
               </div>
             )}
