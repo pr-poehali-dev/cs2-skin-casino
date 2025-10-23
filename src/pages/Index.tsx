@@ -7,9 +7,11 @@ import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('games');
-  const [balance] = useState(1234.56);
+  const [balance, setBalance] = useState(1234.56);
   const [isOpeningCase, setIsOpeningCase] = useState(false);
   const [openedItem, setOpenedItem] = useState<any>(null);
+  const [inventory, setInventory] = useState<any[]>([]);
+  const [selectedSkin, setSelectedSkin] = useState<any>(null);
 
   const cases = [
     {
@@ -52,16 +54,35 @@ const Index = () => {
   ];
 
   const openCase = (caseItem: any) => {
-    if (balance < caseItem.price) return;
+    if (balance < caseItem.price || caseItem.items.length === 0) return;
     
     setIsOpeningCase(true);
     setOpenedItem(null);
+    setBalance(prev => prev - caseItem.price);
 
     setTimeout(() => {
-      const randomItem = caseItem.items[Math.floor(Math.random() * caseItem.items.length)];
+      const randomItem = {
+        ...caseItem.items[Math.floor(Math.random() * caseItem.items.length)],
+        id: Date.now(),
+        openedAt: new Date().toISOString()
+      };
       setOpenedItem(randomItem);
       setIsOpeningCase(false);
     }, 3000);
+  };
+
+  const addToInventory = () => {
+    if (openedItem) {
+      setInventory(prev => [openedItem, ...prev]);
+      setOpenedItem(null);
+      setActiveSection('inventory');
+    }
+  };
+
+  const sellSkin = (skin: any) => {
+    setInventory(prev => prev.filter(item => item.id !== skin.id));
+    setBalance(prev => prev + skin.price);
+    setSelectedSkin(null);
   };
 
   return (
@@ -197,7 +218,7 @@ const Index = () => {
                   <div className="flex gap-3">
                     <Button 
                       className="flex-1 bg-secondary hover:bg-secondary/90 text-white font-bold neon-border"
-                      onClick={() => setOpenedItem(null)}
+                      onClick={addToInventory}
                     >
                       <Icon name="Package" className="mr-2" size={18} />
                       В ИНВЕНТАРЬ
@@ -226,10 +247,123 @@ const Index = () => {
         )}
 
         {activeSection === 'inventory' && (
-          <div className="text-center py-20">
-            <Icon name="Package" className="mx-auto mb-4 text-primary" size={64} />
-            <h2 className="text-4xl font-bold neon-glow text-primary mb-4">ИНВЕНТАРЬ</h2>
-            <p className="text-xl text-muted-foreground">Здесь будут отображаться ваши скины</p>
+          <div>
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-bold mb-2 neon-glow text-primary">ИНВЕНТАРЬ</h2>
+                <p className="text-muted-foreground">Всего предметов: {inventory.length}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Общая стоимость</p>
+                <p className="text-2xl font-bold text-primary">
+                  ${inventory.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            {inventory.length === 0 ? (
+              <div className="text-center py-20">
+                <Icon name="Package" className="mx-auto mb-4 text-muted-foreground" size={64} />
+                <h3 className="text-2xl font-bold mb-2 text-muted-foreground">Инвентарь пуст</h3>
+                <p className="text-muted-foreground mb-6">Открой кейсы, чтобы получить скины</p>
+                <Button 
+                  className="bg-secondary hover:bg-secondary/90 text-white font-bold neon-border"
+                  onClick={() => setActiveSection('games')}
+                >
+                  <Icon name="Gamepad2" className="mr-2" size={18} />
+                  ОТКРЫТЬ КЕЙСЫ
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {inventory.map((skin) => (
+                  <Card 
+                    key={skin.id}
+                    className="bg-card border-2 hover:border-primary transition-all duration-300 overflow-hidden group cursor-pointer"
+                    style={{ borderColor: `${skin.color}40` }}
+                    onClick={() => setSelectedSkin(skin)}
+                  >
+                    <div className="p-4">
+                      <div className="flex items-center justify-center h-32 mb-3">
+                        <Icon name="Crosshair" size={64} style={{ color: skin.color }} className="group-hover:scale-110 transition-transform" />
+                      </div>
+                      
+                      <Badge 
+                        className="mb-2 text-xs font-bold px-2 py-0.5"
+                        style={{ backgroundColor: skin.color }}
+                      >
+                        {skin.rarity.toUpperCase()}
+                      </Badge>
+                      
+                      <h4 className="font-bold mb-2 text-sm leading-tight" style={{ color: skin.color }}>
+                        {skin.name}
+                      </h4>
+                      
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+                        <span className="text-xl font-bold text-primary">${skin.price.toFixed(2)}</span>
+                        <Button 
+                          size="sm"
+                          className="bg-accent hover:bg-accent/90 text-white font-bold neon-border"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedSkin(skin);
+                          }}
+                        >
+                          <Icon name="DollarSign" size={16} />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {selectedSkin && (
+              <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <Card 
+                  className="max-w-md w-full bg-card border-4 neon-border p-8 text-center animate-scale-in"
+                  style={{ borderColor: selectedSkin.color }}
+                >
+                  <div className="mb-6">
+                    <Icon name="Crosshair" className="mx-auto mb-4" size={96} style={{ color: selectedSkin.color }} />
+                  </div>
+                  
+                  <Badge 
+                    className="mb-4 text-sm font-bold px-4 py-1"
+                    style={{ backgroundColor: selectedSkin.color }}
+                  >
+                    {selectedSkin.rarity.toUpperCase()}
+                  </Badge>
+                  
+                  <h3 className="text-2xl font-bold mb-2 neon-glow" style={{ color: selectedSkin.color }}>
+                    {selectedSkin.name}
+                  </h3>
+                  
+                  <p className="text-4xl font-bold mb-2 text-primary">${selectedSkin.price.toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground mb-8">
+                    Получен: {new Date(selectedSkin.openedAt).toLocaleString('ru-RU')}
+                  </p>
+                  
+                  <div className="flex gap-3">
+                    <Button 
+                      className="flex-1 bg-accent hover:bg-accent/90 text-white font-bold neon-border"
+                      onClick={() => sellSkin(selectedSkin)}
+                    >
+                      <Icon name="DollarSign" className="mr-2" size={18} />
+                      ПРОДАТЬ
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="flex-1 border-2 hover:bg-muted font-bold"
+                      onClick={() => setSelectedSkin(null)}
+                    >
+                      <Icon name="X" className="mr-2" size={18} />
+                      ЗАКРЫТЬ
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+            )}
           </div>
         )}
 
