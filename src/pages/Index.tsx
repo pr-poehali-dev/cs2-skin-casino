@@ -92,6 +92,246 @@ const Index = () => {
         { name: 'Desert Eagle | Blaze', rarity: 'rare', price: 890.00, color: '#00F0FF' },
       ]
     },
+    {
+      id: 7,
+      name: 'SMG MADNESS',
+      price: 85.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'MP9 | Starlight Protector', rarity: 'epic', price: 320.00, color: '#9D4EDD' },
+        { name: 'P90 | Asiimov', rarity: 'rare', price: 180.00, color: '#00F0FF' },
+        { name: 'UMP-45 | Primal Saber', rarity: 'uncommon', price: 95.00, color: '#4ADE80' },
+        { name: 'MAC-10 | Neon Rider', rarity: 'common', price: 42.00, color: '#94A3B8' },
+      ]
+    },
+    {
+      id: 8,
+      name: 'SNIPER ELITE',
+      price: 280.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'AWP | Gungnir', rarity: 'legendary', price: 2400.00, color: '#FF6B00' },
+        { name: 'AWP | Medusa', rarity: 'epic', price: 1200.00, color: '#9D4EDD' },
+        { name: 'SSG 08 | Dragonfire', rarity: 'rare', price: 340.00, color: '#00F0FF' },
+        { name: 'SCAR-20 | Bloodsport', rarity: 'uncommon', price: 120.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 9,
+      name: 'CLASSIC CASE',
+      price: 95.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'M4A4 | Emperor', rarity: 'epic', price: 420.00, color: '#9D4EDD' },
+        { name: 'AK-47 | Redline', rarity: 'rare', price: 185.00, color: '#00F0FF' },
+        { name: 'Galil AR | Chatterbox', rarity: 'uncommon', price: 78.00, color: '#4ADE80' },
+        { name: 'FAMAS | Neural Net', rarity: 'common', price: 35.00, color: '#94A3B8' },
+      ]
+    },
+    {
+      id: 10,
+      name: 'PISTOL POWER',
+      price: 65.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Desert Eagle | Code Red', rarity: 'epic', price: 240.00, color: '#9D4EDD' },
+        { name: 'USP-S | Kill Confirmed', rarity: 'rare', price: 135.00, color: '#00F0FF' },
+        { name: 'P2000 | Fire Elemental', rarity: 'uncommon', price: 68.00, color: '#4ADE80' },
+        { name: 'Tec-9 | Fuel Injector', rarity: 'common', price: 28.00, color: '#94A3B8' },
+      ]
+    },
+    {
+      id: 11,
+      name: 'DOPPLER DREAM',
+      price: 620.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Karambit | Doppler Ruby', rarity: 'legendary', price: 4200.00, color: '#FF6B00' },
+        { name: 'Bayonet | Doppler Sapphire', rarity: 'legendary', price: 3100.00, color: '#FF6B00' },
+        { name: 'Flip Knife | Doppler', rarity: 'epic', price: 1450.00, color: '#9D4EDD' },
+        { name: 'Gut Knife | Doppler', rarity: 'rare', price: 680.00, color: '#00F0FF' },
+      ]
+    },
+    {
+      id: 12,
+      name: 'HEAVY ARTILLERY',
+      price: 145.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'M249 | Aztec', rarity: 'rare', price: 280.00, color: '#00F0FF' },
+        { name: 'Negev | Power Loader', rarity: 'rare', price: 195.00, color: '#00F0FF' },
+        { name: 'XM1014 | Tranquility', rarity: 'uncommon', price: 88.00, color: '#4ADE80' },
+        { name: 'Nova | Hyper Beast', rarity: 'common', price: 42.00, color: '#94A3B8' },
+      ]
+    },
+    {
+      id: 13,
+      name: 'BLUE GEM',
+      price: 890.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Karambit | Case Hardened', rarity: 'legendary', price: 5500.00, color: '#FF6B00' },
+        { name: 'AK-47 | Case Hardened', rarity: 'legendary', price: 3200.00, color: '#FF6B00' },
+        { name: 'Five-SeveN | Case Hardened', rarity: 'epic', price: 1100.00, color: '#9D4EDD' },
+        { name: 'Blue Gem Souvenir', rarity: 'rare', price: 750.00, color: '#00F0FF' },
+      ]
+    },
+    {
+      id: 14,
+      name: 'OPERATION DROP',
+      price: 175.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'AWP | Containment Breach', rarity: 'epic', price: 540.00, color: '#9D4EDD' },
+        { name: 'M4A1-S | Printstream', rarity: 'rare', price: 320.00, color: '#00F0FF' },
+        { name: 'Glock-18 | Gamma Doppler', rarity: 'uncommon', price: 145.00, color: '#4ADE80' },
+        { name: 'MP5-SD | Phosphor', rarity: 'common', price: 65.00, color: '#94A3B8' },
+      ]
+    },
+    {
+      id: 15,
+      name: 'ANCIENT LEGENDS',
+      price: 420.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'AK-47 | Gold Arabesque', rarity: 'legendary', price: 1850.00, color: '#FF6B00' },
+        { name: 'Desert Eagle | Golden Koi', rarity: 'epic', price: 920.00, color: '#9D4EDD' },
+        { name: 'M4A4 | Poseidon', rarity: 'rare', price: 520.00, color: '#00F0FF' },
+        { name: 'AWP | Medusa', rarity: 'uncommon', price: 280.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 16,
+      name: 'GAMMA ZONE',
+      price: 195.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'M9 Bayonet | Gamma Doppler', rarity: 'legendary', price: 1420.00, color: '#FF6B00' },
+        { name: 'Glock-18 | Gamma Doppler', rarity: 'epic', price: 650.00, color: '#9D4EDD' },
+        { name: 'P90 | Shapewood', rarity: 'rare', price: 285.00, color: '#00F0FF' },
+        { name: 'USP-S | Cyrex', rarity: 'uncommon', price: 125.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 17,
+      name: 'FACTORY NEW',
+      price: 520.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Butterfly Knife | Marble Fade', rarity: 'legendary', price: 2650.00, color: '#FF6B00' },
+        { name: 'AK-47 | Vulcan', rarity: 'epic', price: 1180.00, color: '#9D4EDD' },
+        { name: 'AWP | Lightning Strike', rarity: 'rare', price: 680.00, color: '#00F0FF' },
+        { name: 'M4A4 | Desolate Space', rarity: 'uncommon', price: 340.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 18,
+      name: 'SPECTRUM CASE',
+      price: 225.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Talon Knife | Fade', rarity: 'legendary', price: 1680.00, color: '#FF6B00' },
+        { name: 'AK-47 | Bloodsport', rarity: 'epic', price: 780.00, color: '#9D4EDD' },
+        { name: 'M4A1-S | Decimator', rarity: 'rare', price: 395.00, color: '#00F0FF' },
+        { name: 'CZ75-Auto | Red Astor', rarity: 'uncommon', price: 165.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 19,
+      name: 'SHATTERED WEB',
+      price: 295.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Specialist Gloves | Crimson Web', rarity: 'legendary', price: 1950.00, color: '#FF6B00' },
+        { name: 'AWP | Chromatic Aberration', rarity: 'epic', price: 890.00, color: '#9D4EDD' },
+        { name: 'MP7 | Bloodsport', rarity: 'rare', price: 420.00, color: '#00F0FF' },
+        { name: 'P90 | Off World', rarity: 'uncommon', price: 185.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 20,
+      name: 'PRISMA COLLECTION',
+      price: 165.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Stiletto Knife | Fade', rarity: 'legendary', price: 1240.00, color: '#FF6B00' },
+        { name: 'AK-47 | Phantom Disruptor', rarity: 'epic', price: 620.00, color: '#9D4EDD' },
+        { name: 'M4A4 | The Emperor', rarity: 'rare', price: 310.00, color: '#00F0FF' },
+        { name: 'R8 Revolver | Skull Crusher', rarity: 'uncommon', price: 140.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 21,
+      name: 'HORIZON CASE',
+      price: 185.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Ursus Knife | Doppler', rarity: 'legendary', price: 1380.00, color: '#FF6B00' },
+        { name: 'AK-47 | Neon Rider', rarity: 'epic', price: 720.00, color: '#9D4EDD' },
+        { name: 'Desert Eagle | Code Red', rarity: 'rare', price: 365.00, color: '#00F0FF' },
+        { name: 'MP9 | Solar Eclipse', rarity: 'uncommon', price: 155.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 22,
+      name: 'DANGER ZONE',
+      price: 245.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Navaja Knife | Fade', rarity: 'legendary', price: 1520.00, color: '#FF6B00' },
+        { name: 'AWP | Neo-Noir', rarity: 'epic', price: 840.00, color: '#9D4EDD' },
+        { name: 'AK-47 | Asiimov', rarity: 'rare', price: 445.00, color: '#00F0FF' },
+        { name: 'USP-S | Flashback', rarity: 'uncommon', price: 195.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 23,
+      name: 'BREAKOUT CASE',
+      price: 135.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'Butterfly Knife | Slaughter', rarity: 'legendary', price: 1680.00, color: '#FF6B00' },
+        { name: 'M4A1-S | Cyrex', rarity: 'epic', price: 580.00, color: '#9D4EDD' },
+        { name: 'Glock-18 | Water Elemental', rarity: 'rare', price: 275.00, color: '#00F0FF' },
+        { name: 'CZ75-Auto | Pole Position', rarity: 'uncommon', price: 115.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 24,
+      name: 'CHROMA COLLECTION',
+      price: 315.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'M9 Bayonet | Marble Fade', rarity: 'legendary', price: 2280.00, color: '#FF6B00' },
+        { name: 'AK-47 | Cartel', rarity: 'epic', price: 980.00, color: '#9D4EDD' },
+        { name: 'Galil AR | Chatterbox', rarity: 'rare', price: 485.00, color: '#00F0FF' },
+        { name: 'Dual Berettas | Urban Shock', rarity: 'uncommon', price: 220.00, color: '#4ADE80' },
+      ]
+    },
+    {
+      id: 25,
+      name: 'WINTER OFFENSIVE',
+      price: 105.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'M4A4 | Asiimov', rarity: 'epic', price: 720.00, color: '#9D4EDD' },
+        { name: 'AWP | Redline', rarity: 'rare', price: 335.00, color: '#00F0FF' },
+        { name: 'P2000 | Corticera', rarity: 'uncommon', price: 145.00, color: '#4ADE80' },
+        { name: 'M4A1-S | Atomic Alloy', rarity: 'common', price: 58.00, color: '#94A3B8' },
+      ]
+    },
+    {
+      id: 26,
+      name: 'PHOENIX CASE',
+      price: 75.00,
+      image: 'https://v3b.fal.media/files/b/lion/TWB0O0y-bcovoPW2A7XLw_output.png',
+      items: [
+        { name: 'AK-47 | Redline', rarity: 'epic', price: 480.00, color: '#9D4EDD' },
+        { name: 'AWP | Boom', rarity: 'rare', price: 245.00, color: '#00F0FF' },
+        { name: 'Nova | Antique', rarity: 'uncommon', price: 95.00, color: '#4ADE80' },
+        { name: 'MAG-7 | Heaven Guard', rarity: 'common', price: 38.00, color: '#94A3B8' },
+      ]
+    },
   ];
 
   const navItems = [
