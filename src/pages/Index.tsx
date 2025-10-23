@@ -18,6 +18,12 @@ const Index = () => {
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [upgradeItem, setUpgradeItem] = useState<any>(null);
+  const [isUpgrading, setIsUpgrading] = useState(false);
+  const [upgradeResult, setUpgradeResult] = useState<any>(null);
+  const [contractItems, setContractItems] = useState<any[]>([]);
+  const [isProcessingContract, setIsProcessingContract] = useState(false);
+  const [contractResult, setContractResult] = useState<any>(null);
 
   const cases = [
     {
@@ -337,12 +343,11 @@ const Index = () => {
   const navItems = [
     { id: 'home', label: 'ГЛАВНАЯ', icon: 'Home' },
     { id: 'games', label: 'ИГРЫ', icon: 'Gamepad2' },
+    { id: 'upgrade', label: 'АПГРЕЙД', icon: 'TrendingUp' },
+    { id: 'contract', label: 'КОНТРАКТЫ', icon: 'FileSignature' },
     { id: 'inventory', label: 'ИНВЕНТАРЬ', icon: 'Package' },
     { id: 'deposit', label: 'ПОПОЛНЕНИЕ', icon: 'Wallet' },
     { id: 'withdraw', label: 'ВЫВОД', icon: 'ArrowUpFromLine' },
-    { id: 'profile', label: 'ПРОФИЛЬ', icon: 'User' },
-    { id: 'support', label: 'ПОДДЕРЖКА', icon: 'MessageCircle' },
-    { id: 'rules', label: 'ПРАВИЛА', icon: 'FileText' },
   ];
 
   const openCase = (caseItem: any) => {
@@ -424,6 +429,90 @@ const Index = () => {
         date: new Date().toISOString()
       }, ...prev]);
       setWithdrawAmount('');
+    }
+  };
+
+  const handleUpgrade = () => {
+    if (!upgradeItem) return;
+    
+    setIsUpgrading(true);
+    const chance = Math.random();
+    const success = chance > 0.5;
+
+    setTimeout(() => {
+      if (success) {
+        const newPrice = upgradeItem.price * (1.5 + Math.random() * 0.5);
+        const upgradedItem = {
+          ...upgradeItem,
+          name: upgradeItem.name + ' (Upgraded)',
+          price: newPrice,
+          id: Date.now(),
+          openedAt: new Date().toISOString()
+        };
+        setInventory(prev => prev.filter(item => item.id !== upgradeItem.id));
+        setInventory(prev => [upgradedItem, ...prev]);
+        setUpgradeResult({ success: true, item: upgradedItem });
+        setTransactions(prev => [{
+          id: Date.now(),
+          type: 'upgrade',
+          amount: newPrice - upgradeItem.price,
+          description: `Апгрейд: ${upgradeItem.name}`,
+          date: new Date().toISOString()
+        }, ...prev]);
+      } else {
+        setInventory(prev => prev.filter(item => item.id !== upgradeItem.id));
+        setUpgradeResult({ success: false, item: upgradeItem });
+        setTransactions(prev => [{
+          id: Date.now(),
+          type: 'upgrade',
+          amount: -upgradeItem.price,
+          description: `Провал апгрейда: ${upgradeItem.name}`,
+          date: new Date().toISOString()
+        }, ...prev]);
+      }
+      setIsUpgrading(false);
+      setUpgradeItem(null);
+    }, 3000);
+  };
+
+  const handleContract = () => {
+    if (contractItems.length !== 5) return;
+    
+    setIsProcessingContract(true);
+    const totalValue = contractItems.reduce((sum, item) => sum + item.price, 0);
+    const avgValue = totalValue / 5;
+    
+    setTimeout(() => {
+      const allItems = cases.flatMap(c => c.items);
+      const eligibleItems = allItems.filter(item => item.price >= avgValue * 0.8 && item.price <= avgValue * 2);
+      const wonItem = eligibleItems[Math.floor(Math.random() * eligibleItems.length)] || allItems[0];
+      
+      const contractItem = {
+        ...wonItem,
+        id: Date.now(),
+        openedAt: new Date().toISOString()
+      };
+      
+      setInventory(prev => prev.filter(item => !contractItems.find(ci => ci.id === item.id)));
+      setInventory(prev => [contractItem, ...prev]);
+      setContractResult(contractItem);
+      setTransactions(prev => [{
+        id: Date.now(),
+        type: 'contract',
+        amount: contractItem.price - totalValue,
+        description: `Контракт: ${contractItem.name}`,
+        date: new Date().toISOString()
+      }, ...prev]);
+      setContractItems([]);
+      setIsProcessingContract(false);
+    }, 3000);
+  };
+
+  const toggleContractItem = (item: any) => {
+    if (contractItems.find(ci => ci.id === item.id)) {
+      setContractItems(prev => prev.filter(ci => ci.id !== item.id));
+    } else if (contractItems.length < 5) {
+      setContractItems(prev => [...prev, item]);
     }
   };
 
@@ -917,7 +1006,215 @@ const Index = () => {
           </div>
         )}
 
-        {activeSection !== 'games' && activeSection !== 'home' && activeSection !== 'inventory' && activeSection !== 'deposit' && activeSection !== 'withdraw' && (
+        {activeSection === 'upgrade' && (
+          <div>
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold mb-2 neon-glow text-secondary">АПГРЕЙД СКИНОВ</h2>
+              <p className="text-muted-foreground">Улучши свой скин с шансом 50% (в 1.5-2x раза)</p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              {!upgradeItem ? (
+                <div>
+                  <h3 className="text-xl font-bold mb-4 text-primary">ВЫБЕРИ СКИН ДЛЯ АПГРЕЙДА</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {inventory.map((skin) => (
+                      <Card 
+                        key={skin.id}
+                        className="bg-card border-2 border-border hover:border-secondary transition-all cursor-pointer"
+                        style={{ borderColor: `${skin.color}40` }}
+                        onClick={() => setUpgradeItem(skin)}
+                      >
+                        <div className="p-4">
+                          <Icon name="Crosshair" size={64} style={{ color: skin.color }} className="mx-auto mb-3" />
+                          <Badge className="mb-2 text-xs font-bold" style={{ backgroundColor: skin.color }}>
+                            {skin.rarity.toUpperCase()}
+                          </Badge>
+                          <h4 className="font-bold text-sm mb-2" style={{ color: skin.color }}>{skin.name}</h4>
+                          <p className="text-xl font-bold text-primary">${skin.price.toFixed(2)}</p>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                  {inventory.length === 0 && (
+                    <div className="text-center py-20">
+                      <Icon name="Package" className="mx-auto mb-4 text-muted-foreground" size={64} />
+                      <p className="text-muted-foreground">Нет скинов для апгрейда</p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Card className="bg-card border-4 neon-border p-8" style={{ borderColor: upgradeItem.color }}>
+                  <div className="text-center">
+                    <Icon name="TrendingUp" className="mx-auto mb-4" size={64} style={{ color: upgradeItem.color }} />
+                    <h3 className="text-2xl font-bold mb-2" style={{ color: upgradeItem.color }}>{upgradeItem.name}</h3>
+                    <p className="text-3xl font-bold mb-6 text-primary">${upgradeItem.price.toFixed(2)}</p>
+                    
+                    <div className="bg-muted rounded-lg p-4 mb-6">
+                      <p className="text-sm text-muted-foreground mb-2">Возможная цена после апгрейда:</p>
+                      <p className="text-2xl font-bold text-secondary">
+                        ${(upgradeItem.price * 1.5).toFixed(2)} - ${(upgradeItem.price * 2).toFixed(2)}
+                      </p>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <Button 
+                        className="flex-1 bg-secondary hover:bg-secondary/90 text-white font-bold neon-border"
+                        onClick={handleUpgrade}
+                      >
+                        <Icon name="Zap" className="mr-2" size={18} />
+                        АПГРЕЙД (50%)
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        className="flex-1 border-2"
+                        onClick={() => setUpgradeItem(null)}
+                      >
+                        ОТМЕНА
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {isUpgrading && (
+                <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-32 h-32 mx-auto border-4 border-secondary rounded-full animate-spin border-t-transparent mb-6"></div>
+                    <h3 className="text-3xl font-bold neon-glow text-secondary">АПГРЕЙД...</h3>
+                  </div>
+                </div>
+              )}
+
+              {upgradeResult && (
+                <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                  <Card className="max-w-md w-full bg-card border-4 neon-border p-8 text-center">
+                    {upgradeResult.success ? (
+                      <>
+                        <Icon name="CheckCircle2" className="mx-auto mb-4 text-secondary" size={96} />
+                        <h3 className="text-3xl font-bold mb-4 text-secondary">УСПЕХ!</h3>
+                        <p className="text-xl font-bold mb-2" style={{ color: upgradeResult.item.color }}>
+                          {upgradeResult.item.name}
+                        </p>
+                        <p className="text-4xl font-bold mb-6 text-primary">${upgradeResult.item.price.toFixed(2)}</p>
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="XCircle" className="mx-auto mb-4 text-destructive" size={96} />
+                        <h3 className="text-3xl font-bold mb-4 text-destructive">ПРОВАЛ</h3>
+                        <p className="text-xl mb-6 text-muted-foreground">Скин потерян</p>
+                      </>
+                    )}
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-white font-bold" onClick={() => setUpgradeResult(null)}>
+                      ЗАКРЫТЬ
+                    </Button>
+                  </Card>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'contract' && (
+          <div>
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold mb-2 neon-glow text-primary">КОНТРАКТЫ</h2>
+              <p className="text-muted-foreground">Обменяй 5 скинов на 1 новый скин ({contractItems.length}/5)</p>
+            </div>
+
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-5 gap-3 mb-6">
+                {[...Array(5)].map((_, i) => (
+                  <Card key={i} className="bg-card border-2 border-dashed border-border aspect-square flex items-center justify-center">
+                    {contractItems[i] ? (
+                      <div className="text-center p-2">
+                        <Icon name="Crosshair" size={48} style={{ color: contractItems[i].color }} className="mx-auto mb-2" />
+                        <p className="text-xs font-bold">${contractItems[i].price.toFixed(0)}</p>
+                      </div>
+                    ) : (
+                      <Icon name="Plus" size={32} className="text-muted-foreground" />
+                    )}
+                  </Card>
+                ))}
+              </div>
+
+              <div className="text-center mb-6">
+                <Button 
+                  className="bg-accent hover:bg-accent/90 text-white font-bold neon-border px-12 py-6 text-lg"
+                  onClick={handleContract}
+                  disabled={contractItems.length !== 5}
+                >
+                  <Icon name="FileSignature" className="mr-2" size={24} />
+                  ОБМЕНЯТЬ ({contractItems.length}/5)
+                </Button>
+              </div>
+
+              <h3 className="text-xl font-bold mb-4 text-primary">ВЫБЕРИ СКИНЫ ДЛЯ КОНТРАКТА</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                {inventory.map((skin) => {
+                  const isSelected = contractItems.find(ci => ci.id === skin.id);
+                  return (
+                    <Card 
+                      key={skin.id}
+                      className={`bg-card border-2 transition-all cursor-pointer ${
+                        isSelected ? 'border-accent scale-95' : 'border-border hover:border-primary'
+                      }`}
+                      onClick={() => toggleContractItem(skin)}
+                    >
+                      <div className="p-3">
+                        <Icon name="Crosshair" size={48} style={{ color: skin.color }} className="mx-auto mb-2" />
+                        <Badge className="text-xs mb-1" style={{ backgroundColor: skin.color }}>
+                          {skin.rarity.toUpperCase()}
+                        </Badge>
+                        <p className="text-xs font-bold mb-1 truncate" style={{ color: skin.color }}>{skin.name}</p>
+                        <p className="text-sm font-bold text-primary">${skin.price.toFixed(0)}</p>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {inventory.length === 0 && (
+                <div className="text-center py-20">
+                  <Icon name="Package" className="mx-auto mb-4 text-muted-foreground" size={64} />
+                  <p className="text-muted-foreground">Нет скинов для контракта</p>
+                </div>
+              )}
+
+              {isProcessingContract && (
+                <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-32 h-32 mx-auto border-4 border-primary rounded-full animate-spin border-t-transparent mb-6"></div>
+                    <h3 className="text-3xl font-bold neon-glow text-primary">ОБРАБОТКА КОНТРАКТА...</h3>
+                  </div>
+                </div>
+              )}
+
+              {contractResult && (
+                <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                  <Card className="max-w-md w-full bg-card border-4 neon-border p-8 text-center" style={{ borderColor: contractResult.color }}>
+                    <Icon name="Sparkles" className="mx-auto mb-4" size={96} style={{ color: contractResult.color }} />
+                    <Badge className="mb-4 text-sm font-bold px-4 py-1" style={{ backgroundColor: contractResult.color }}>
+                      {contractResult.rarity.toUpperCase()}
+                    </Badge>
+                    <h3 className="text-2xl font-bold mb-2 neon-glow" style={{ color: contractResult.color }}>
+                      {contractResult.name}
+                    </h3>
+                    <p className="text-4xl font-bold mb-6 text-primary">${contractResult.price.toFixed(2)}</p>
+                    <Button 
+                      className="w-full bg-primary hover:bg-primary/90 text-white font-bold"
+                      onClick={() => setContractResult(null)}
+                    >
+                      ЗАКРЫТЬ
+                    </Button>
+                  </Card>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeSection !== 'games' && activeSection !== 'home' && activeSection !== 'inventory' && activeSection !== 'deposit' && activeSection !== 'withdraw' && activeSection !== 'upgrade' && activeSection !== 'contract' && (
           <div className="text-center py-20">
             <Icon name="Construction" className="mx-auto mb-4 text-accent" size={64} />
             <h2 className="text-4xl font-bold neon-glow text-accent mb-4">В РАЗРАБОТКЕ</h2>
